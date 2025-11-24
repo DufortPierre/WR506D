@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des films{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Liste des films</h1>
+    
+    <p>Total : {{ pagination.getTotalItemCount }} films</p>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titre</th>
+                <th>Date de création</th>
+                <th>Catégories</th>
+                <th>Acteurs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in pagination %}
+                <tr>
+                    <td>{{ movie.id }}</td>
+                    <td>{{ movie.name }}</td>
+                    <td>{{ movie.createdAt|date('d/m/Y H:i') }}</td>
+                    <td>
+                        {% for category in movie.categories %}
+                            <span class="badge bg-primary">{{ category.name }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for actor in movie.actors %}
+                            {{ actor.firstname }} {{ actor.lastname }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {# Afficher la pagination #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+</div>
+{% endblock %}
