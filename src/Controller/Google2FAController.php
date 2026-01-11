@@ -33,11 +33,10 @@ class Google2FAController extends AbstractController
         }
 
         // Générer un nouveau secret si l'utilisateur n'en a pas
-        if (!$user->getGoogle2faSecret()) {
+        $secret = $user->getGoogle2faSecret();
+        if (!$secret) {
             $secret = $this->google2FAService->generateSecret();
             $user->setGoogle2faSecret($secret);
-        } else {
-            $secret = $user->getGoogle2faSecret();
         }
 
         // Générer l'URL du QR code
@@ -180,7 +179,7 @@ class Google2FAController extends AbstractController
     }
 
     #[Route('/recovery-codes', name: 'google2fa_recovery_codes', methods: ['POST'])]
-    public function generateRecoveryCodes(Request $request): JsonResponse
+    public function generateRecoveryCodes(): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();

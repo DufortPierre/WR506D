@@ -71,7 +71,12 @@ class Movie
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom du film est obligatoire")]
-    #[Assert\Length(min: 1, max: 255, minMessage: "Le nom doit contenir au moins 1 caractère", maxMessage: "Le nom ne peut pas dépasser 255 caractères")]
+    #[Assert\Length(
+        min: 1,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins 1 caractère",
+        maxMessage: "Le nom ne peut pas dépasser 255 caractères"
+    )]
     #[Groups(['movie:read','movie:write','actor:read'])]
     private ?string $name = null;
 
@@ -99,7 +104,7 @@ class Movie
            #[ORM\Column]
            #[Groups(['movie:read'])]
            #[SerializedName('created_at')]
-           private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\Type(type: 'integer', message: "Le nombre d'entrées doit être un entier")]
@@ -132,7 +137,7 @@ class Movie
            #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
            #[Groups(['movie:read','movie:write'])]
            #[MaxDepth(2)]
-           private Collection $actors;
+    private Collection $actors;
 
            /**
             * @var Collection<int, Category>
@@ -141,7 +146,7 @@ class Movie
            #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'movies')]
            #[Groups(['movie:read','movie:write'])]
            #[MaxDepth(2)]
-           private Collection $categories;
+    private Collection $categories;
 
     public function __construct()
     {

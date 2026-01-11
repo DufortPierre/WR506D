@@ -85,7 +85,7 @@ class Actor
            #[ORM\Column]
            #[Groups(['actor:read'])]
            #[SerializedName('created_at')]
-           private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
            /**
             * @var Collection<int, Movie>
@@ -93,7 +93,7 @@ class Actor
            #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
            #[Groups(['actor:read','actor:write'])]
            #[MaxDepth(2)]
-           private Collection $movies;
+    private Collection $movies;
 
     public function __construct()
     {
@@ -187,7 +187,7 @@ class Actor
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

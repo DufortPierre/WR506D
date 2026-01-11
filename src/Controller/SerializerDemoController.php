@@ -25,7 +25,7 @@ class SerializerDemoController extends AbstractController
     }
 
     #[Route('/movies', name: 'serializer_demo_movies', methods: ['GET'])]
-    public function getMovies(Request $request): JsonResponse
+    public function getMovies(): JsonResponse
     {
         $movies = $this->movieRepository->findAll();
         
@@ -43,7 +43,7 @@ class SerializerDemoController extends AbstractController
     }
 
     #[Route('/movies/{id}', name: 'serializer_demo_movie', methods: ['GET'])]
-    public function getMovie(int $id, Request $request): JsonResponse
+    public function getMovie(int $id): JsonResponse
     {
         $movie = $this->movieRepository->find($id);
         
@@ -66,7 +66,7 @@ class SerializerDemoController extends AbstractController
     }
 
     #[Route('/actors', name: 'serializer_demo_actors', methods: ['GET'])]
-    public function getActors(Request $request): JsonResponse
+    public function getActors(): JsonResponse
     {
         $actors = $this->actorRepository->findAll();
         
@@ -83,7 +83,7 @@ class SerializerDemoController extends AbstractController
     }
 
     #[Route('/actors/{id}', name: 'serializer_demo_actor', methods: ['GET'])]
-    public function getActor(int $id, Request $request): JsonResponse
+    public function getActor(int $id): JsonResponse
     {
         $actor = $this->actorRepository->find($id);
         

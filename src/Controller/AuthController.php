@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class AuthController extends AbstractController
 {
     #[Route('/auth', name: 'auth', methods: ['POST'])]
-    public function auth(Request $request): Response
+    public function auth(): Response
     {
         // This should never be reached because json_login intercepts the request
         // But we need this route for Symfony routing

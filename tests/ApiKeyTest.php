@@ -11,16 +11,33 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiKeyTest extends WebTestCase
 {
-    private EntityManagerInterface $entityManager;
-    private UserRepository $userRepository;
-    private ApiKeyRepository $apiKeyRepository;
+    private ?EntityManagerInterface $entityManager = null;
+    private ?UserRepository $userRepository = null;
+    private ?ApiKeyRepository $apiKeyRepository = null;
 
-    protected function setUp(): void
+    protected function getEntityManager(): EntityManagerInterface
     {
-        $kernel = self::bootKernel();
-        $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
-        $this->userRepository = $this->entityManager->getRepository(User::class);
-        $this->apiKeyRepository = $this->entityManager->getRepository(ApiKey::class);
+        if ($this->entityManager === null) {
+            $kernel = self::bootKernel();
+            $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
+        }
+        return $this->entityManager;
+    }
+
+    protected function getUserRepository(): UserRepository
+    {
+        if ($this->userRepository === null) {
+            $this->userRepository = $this->getEntityManager()->getRepository(User::class);
+        }
+        return $this->userRepository;
+    }
+
+    protected function getApiKeyRepository(): ApiKeyRepository
+    {
+        if ($this->apiKeyRepository === null) {
+            $this->apiKeyRepository = $this->getEntityManager()->getRepository(ApiKey::class);
+        }
+        return $this->apiKeyRepository;
     }
 
     protected function tearDown(): void
@@ -38,7 +55,7 @@ class ApiKeyTest extends WebTestCase
         $client = static::createClient();
 
         // Create a test user first (or use existing)
-        $user = $this->userRepository->findOneBy([]) ?? $this->createTestUser();
+        $user = $this->getUserRepository()->findOneBy([]) ?? $this->createTestUser();
 
         // Login as admin to create API key
         $client->request('POST', '/auth', [], [], [
@@ -57,7 +74,7 @@ class ApiKeyTest extends WebTestCase
     {
         $client = static::createClient();
         
-        $user = $this->userRepository->findOneBy([]) ?? $this->createTestUser();
+        $user = $this->getUserRepository()->findOneBy([]) ?? $this->createTestUser();
         
         // Generate an API key
         $plainApiKey = bin2hex(random_bytes(32));
