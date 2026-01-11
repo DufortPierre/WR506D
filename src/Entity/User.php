@@ -57,6 +57,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?string $plainPassword = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $google2faSecret = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $google2faEnabled = false;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $google2faRecoveryCodes = null;
+
     public function getId(): ?int
     {
         return $this->id;
