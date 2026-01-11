@@ -170,4 +170,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // @deprecated, to be removed when upgrading to Symfony 8
     }
+
+    public function getGoogle2faSecret(): ?string
+    {
+        return $this->google2faSecret;
+    }
+
+    public function setGoogle2faSecret(?string $google2faSecret): static
+    {
+        $this->google2faSecret = $google2faSecret;
+        return $this;
+    }
+
+    public function isGoogle2faEnabled(): bool
+    {
+        return $this->google2faEnabled;
+    }
+
+    public function setGoogle2faEnabled(bool $google2faEnabled): static
+    {
+        $this->google2faEnabled = $google2faEnabled;
+        return $this;
+    }
+
+    public function getGoogle2faRecoveryCodes(): ?array
+    {
+        return $this->google2faRecoveryCodes;
+    }
+
+    public function setGoogle2faRecoveryCodes(?array $google2faRecoveryCodes): static
+    {
+        $this->google2faRecoveryCodes = $google2faRecoveryCodes;
+        return $this;
+    }
 }
