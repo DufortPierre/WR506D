@@ -152,7 +152,7 @@ class Movie
     {
         $this->actors = new ArrayCollection();
         $this->categories = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]

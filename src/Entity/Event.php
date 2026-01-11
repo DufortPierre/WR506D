@@ -42,9 +42,9 @@ class Event
         return $this->Movies;
     }
 
-    public function setMovies(string $Movies): static
+    public function setMovies(string $movies): static
     {
-        $this->Movies = $Movies;
+        $this->movies = $movies;
 
         return $this;
     }
@@ -74,12 +74,12 @@ class Event
 
     public function getReleaseDate(): ?\DateTime
     {
-        return $this->ReleaseDate;
+        return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTime $ReleaseDate): static
+    public function setReleaseDate(\DateTime $releaseDate): static
     {
-        $this->ReleaseDate = $ReleaseDate;
+        $this->releaseDate = $releaseDate;
 
         return $this;
     }
