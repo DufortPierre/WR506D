@@ -31,7 +31,13 @@ class CreateUserCommand extends Command
         $this
             ->addArgument('email', InputArgument::REQUIRED, 'User email address')
             ->addArgument('password', InputArgument::REQUIRED, 'User password')
-            ->addOption('role', 'r', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'User roles', ['ROLE_USER'])
+            ->addOption(
+                'role',
+                'r',
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'User roles',
+                ['ROLE_USER']
+            )
             ->addOption('firstname', 'f', InputOption::VALUE_OPTIONAL, 'User firstname')
         ;
     }
