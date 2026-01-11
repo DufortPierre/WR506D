@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class ProductController extends AbstractController
 {
@@ -16,9 +15,8 @@ class ProductController extends AbstractController
     }
 
     #[Route('/product/{id}', name: 'product_view', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function viewProduct(Request $request): Response
+    public function viewProduct(int $id): Response
     {
-        $id = $request->attributes->get('id'); // récupéré depuis l’URL
         return $this->render('product/view.html.twig', ['id' => $id]);
     }
 }
