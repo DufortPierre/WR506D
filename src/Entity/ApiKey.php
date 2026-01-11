@@ -72,7 +72,7 @@ class ApiKey
 
     public function __construct()
     {
-        $this->apiKeyCreatedAt = new \DateTimeImmutable();
+        $this->apiKeyCreatedAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
