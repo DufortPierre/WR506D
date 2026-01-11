@@ -122,21 +122,23 @@ class Movie
     #[Groups(['movie:read','movie:write'])]
     private ?float $budget = null;
 
-    /**
-     * @var Collection<int, Actor>
-     * Owning side (inversedBy = "movies" dans Actor)
-     */
-    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
-    #[Groups(['movie:read','movie:write'])]
-    private Collection $actors;
+           /**
+            * @var Collection<int, Actor>
+            * Owning side (inversedBy = "movies" dans Actor)
+            */
+           #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
+           #[Groups(['movie:read','movie:write'])]
+           #[MaxDepth(2)]
+           private Collection $actors;
 
-    /**
-     * @var Collection<int, Category>
-     * Inverse side (mappedBy = "movies" dans Category)
-     */
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'movies')]
-    #[Groups(['movie:read','movie:write'])]
-    private Collection $categories;
+           /**
+            * @var Collection<int, Category>
+            * Inverse side (mappedBy = "movies" dans Category)
+            */
+           #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'movies')]
+           #[Groups(['movie:read','movie:write'])]
+           #[MaxDepth(2)]
+           private Collection $categories;
 
     public function __construct()
     {
