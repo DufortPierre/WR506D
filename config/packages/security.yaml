@@ -16,6 +16,7 @@ security:
         login:
             pattern: ^/auth
             stateless: true
+            provider: app_user_provider
             json_login:
                 check_path: /auth
                 username_path: email
