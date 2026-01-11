@@ -56,12 +56,22 @@ class Actor
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom de famille est obligatoire")]
-    #[Assert\Length(min: 2, max: 255, minMessage: "Le nom doit contenir au moins 2 caractères", maxMessage: "Le nom ne peut pas dépasser 255 caractères")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins 2 caractères",
+        maxMessage: "Le nom ne peut pas dépasser 255 caractères"
+    )]
     #[Groups(['actor:read','actor:write','movie:read'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Length(min: 2, max: 255, minMessage: "Le prénom doit contenir au moins 2 caractères", maxMessage: "Le prénom ne peut pas dépasser 255 caractères")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le prénom doit contenir au moins 2 caractères",
+        maxMessage: "Le prénom ne peut pas dépasser 255 caractères"
+    )]
     #[Groups(['actor:read','actor:write','movie:read'])]
     private ?string $firstname = null;
 
@@ -98,7 +108,7 @@ class Actor
     public function __construct()
     {
         $this->movies = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]

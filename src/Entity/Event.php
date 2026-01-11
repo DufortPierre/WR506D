@@ -15,7 +15,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Movies = null;
+    private ?string $movies = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;

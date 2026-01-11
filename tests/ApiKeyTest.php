@@ -11,46 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ApiKeyTest extends WebTestCase
 {
-    private ?EntityManagerInterface $entityManager = null;
-    private ?UserRepository $userRepository = null;
-    private ?ApiKeyRepository $apiKeyRepository = null;
-
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        if ($this->entityManager === null) {
-            $kernel = self::bootKernel();
-            $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
-        }
-        return $this->entityManager;
-    }
-
-    protected function getUserRepository(): UserRepository
-    {
-        if ($this->userRepository === null) {
-            $this->userRepository = $this->getEntityManager()->getRepository(User::class);
-        }
-        return $this->userRepository;
-    }
-
-    protected function getApiKeyRepository(): ApiKeyRepository
-    {
-        if ($this->apiKeyRepository === null) {
-            $this->apiKeyRepository = $this->getEntityManager()->getRepository(ApiKey::class);
-        }
-        return $this->apiKeyRepository;
-    }
-
-    protected function tearDown(): void
-    {
-        // Clean up test data - only if repositories were initialized
-        if ($this->apiKeyRepository !== null && $this->entityManager !== null) {
-            $apiKeys = $this->apiKeyRepository->findAll();
-            foreach ($apiKeys as $apiKey) {
-                $this->entityManager->remove($apiKey);
-            }
-            $this->entityManager->flush();
-        }
-    }
 
     public function testApiKeyGeneration(): void
     {
