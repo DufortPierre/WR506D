@@ -72,7 +72,10 @@ class Google2FAController extends AbstractController
 
         $secret = $user->getGoogle2faSecret();
         if (!$secret) {
-            return new JsonResponse(['error' => '2FA secret not found. Please enable 2FA first.'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(
+                ['error' => '2FA secret not found. Please enable 2FA first.'],
+                Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Vérifier le code
