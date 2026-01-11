@@ -16,6 +16,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Doctrine\ORM\EntityManagerInterface;
+use DateTimeImmutable;
 
 class ApiKeyAuthenticator extends AbstractAuthenticator
 {
@@ -66,7 +67,7 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
         }
 
         // Update last used timestamp
-        $apiKey->setApiKeyLastUsedAt(new \DateTimeImmutable());
+        $apiKey->setApiKeyLastUsedAt(new DateTimeImmutable());
         $this->entityManager->flush();
 
         // Return passport with user
@@ -79,7 +80,8 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        return null; // Continue with the request
+        // Continue with the request
+        return null;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
