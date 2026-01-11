@@ -10,6 +10,7 @@
         "api-platform/doctrine-orm": "^4.1",
         "api-platform/graphql": "^4.1",
         "api-platform/symfony": "^4.1",
+        "cocur/slugify": "^4.7",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.16",
         "doctrine/doctrine-migrations-bundle": "^3.4",
