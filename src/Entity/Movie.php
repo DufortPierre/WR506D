@@ -27,6 +27,8 @@ use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
@@ -94,9 +96,10 @@ class Movie
     #[Groups(['movie:read','movie:write'])]
     private ?MediaObject $image = null;
 
-    #[ORM\Column]
-    #[Groups(['movie:read'])]
-    private ?\DateTimeImmutable $createdAt = null;
+           #[ORM\Column]
+           #[Groups(['movie:read'])]
+           #[SerializedName('created_at')]
+           private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\Type(type: 'integer', message: "Le nombre d'entrées doit être un entier")]

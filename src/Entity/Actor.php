@@ -82,16 +82,18 @@ class Actor
     #[Groups(['actor:read','actor:write','movie:read'])]
     private ?MediaObject $photo = null;
 
-    #[ORM\Column]
-    #[Groups(['actor:read'])]
-    private ?\DateTimeImmutable $createdAt = null;
+           #[ORM\Column]
+           #[Groups(['actor:read'])]
+           #[SerializedName('created_at')]
+           private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var Collection<int, Movie>
-     */
-    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
-    #[Groups(['actor:read','actor:write'])]
-    private Collection $movies;
+           /**
+            * @var Collection<int, Movie>
+            */
+           #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
+           #[Groups(['actor:read','actor:write'])]
+           #[MaxDepth(2)]
+           private Collection $movies;
 
     public function __construct()
     {
