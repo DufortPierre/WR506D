@@ -47,22 +47,22 @@ class AppStatsCommand extends Command
         
         switch ($type) {
             case 'movies':
-                $this->displayMoviesStats($io, $output);
+                $this->displayMoviesStats($output);
                 break;
             case 'actors':
-                $this->displayActorsStats($io, $output);
+                $this->displayActorsStats($output);
                 break;
             case 'categories':
-                $this->displayCategoriesStats($io, $output);
+                $this->displayCategoriesStats($output);
                 break;
             case 'images':
-                $this->displayImagesStats($io, $output);
+                $this->displayImagesStats($output);
                 break;
             case 'all':
-                $this->displayMoviesStats($io, $output);
-                $this->displayActorsStats($io, $output);
-                $this->displayCategoriesStats($io, $output);
-                $this->displayImagesStats($io, $output);
+                $this->displayMoviesStats($output);
+                $this->displayActorsStats($output);
+                $this->displayCategoriesStats($output);
+                $this->displayImagesStats($output);
                 break;
             default:
                 $io->error("Type invalide. Types acceptés : movies, actors, categories, images, all");
