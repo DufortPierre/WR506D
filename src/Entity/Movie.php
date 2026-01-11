@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 
 // API Platform
 use ApiPlatform\Metadata\ApiResource;
@@ -148,49 +149,132 @@ class Movie
     public function setCreatedAtValue(): void
     {
         if (null === $this->createdAt) {
-            $this->createdAt = new \DateTimeImmutable();
+            $this->createdAt = new DateTimeImmutable();
         }
     }
 
     // -------------------- Getters / Setters --------------------
 
-    public function getId(): ?int { return $this->id; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    public function getName(): ?string { return $this->name; }
-    public function setName(string $name): static { $this->name = $name; return $this; }
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
 
-    public function isOnline(): bool { return $this->online; }
-    public function setOnline(bool $online): static { $this->online = $online; return $this; }
+    public function isOnline(): bool
+    {
+        return $this->online;
+    }
+    public function setOnline(bool $online): static
+    {
+        $this->online = $online;
+        return $this;
+    }
 
-    public function getDescription(): ?string { return $this->description; }
-    public function setDescription(?string $description): static { $this->description = $description; return $this; }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+        return $this;
+    }
 
-    public function getDuration(): ?int { return $this->duration; }
-    public function setDuration(?int $duration): static { $this->duration = $duration; return $this; }
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+    public function setDuration(?int $duration): static
+    {
+        $this->duration = $duration;
+        return $this;
+    }
 
-    public function getReleaseDate(): ?\DateTime { return $this->releaseDate; }
-    public function setReleaseDate(?\DateTime $releaseDate): static { $this->releaseDate = $releaseDate; return $this; }
+    public function getReleaseDate(): ?\DateTime
+    {
+        return $this->releaseDate;
+    }
+    public function setReleaseDate(?\DateTime $releaseDate): static
+    {
+        $this->releaseDate = $releaseDate;
+        return $this;
+    }
 
-    public function getImage(): ?MediaObject { return $this->image; }
-    public function setImage(?MediaObject $image): static { $this->image = $image; return $this; }
+    public function getImage(): ?MediaObject
+    {
+        return $this->image;
+    }
+    public function setImage(?MediaObject $image): static
+    {
+        $this->image = $image;
+        return $this;
+    }
 
-    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
 
-    public function getNbEntries(): ?int { return $this->nbEntries; }
-    public function setNbEntries(?int $nbEntries): static { $this->nbEntries = $nbEntries; return $this; }
+    public function getNbEntries(): ?int
+    {
+        return $this->nbEntries;
+    }
+    public function setNbEntries(?int $nbEntries): static
+    {
+        $this->nbEntries = $nbEntries;
+        return $this;
+    }
 
-    public function getDirector(): ?Director { return $this->director; }
-    public function setDirector(?Director $director): static { $this->director = $director; return $this; }
+    public function getDirector(): ?Director
+    {
+        return $this->director;
+    }
+    public function setDirector(?Director $director): static
+    {
+        $this->director = $director;
+        return $this;
+    }
 
-    public function getUrl(): ?string { return $this->url; }
-    public function setUrl(?string $url): static { $this->url = $url; return $this; }
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+    public function setUrl(?string $url): static
+    {
+        $this->url = $url;
+        return $this;
+    }
 
-    public function getBudget(): ?float { return $this->budget; }
-    public function setBudget(?float $budget): static { $this->budget = $budget; return $this; }
+    public function getBudget(): ?float
+    {
+        return $this->budget;
+    }
+    public function setBudget(?float $budget): static
+    {
+        $this->budget = $budget;
+        return $this;
+    }
 
     /** @return Collection<int, Actor> */
-    public function getActors(): Collection { return $this->actors; }
+    public function getActors(): Collection
+    {
+        return $this->actors;
+    }
 
     public function addActor(Actor $actor): static
     {
@@ -210,7 +294,10 @@ class Movie
     }
 
     /** @return Collection<int, Category> */
-    public function getCategories(): Collection { return $this->categories; }
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
 
     public function addCategory(Category $category): static
     {

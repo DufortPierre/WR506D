@@ -5,6 +5,7 @@ namespace App\State;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use ReflectionClass;
 
 final class UserPasswordHasher implements ProcessorInterface
 {
@@ -20,7 +21,7 @@ final class UserPasswordHasher implements ProcessorInterface
             return $this->processor->process($data, $operation, $uriVariables, $context);
         }
 
-        $reflection = new \ReflectionClass($data);
+        $reflection = new ReflectionClass($data);
         if (!$reflection->hasProperty('plainPassword')) {
             return $this->processor->process($data, $operation, $uriVariables, $context);
         }
