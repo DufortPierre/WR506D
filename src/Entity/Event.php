@@ -15,7 +15,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Movies = null;
+    private ?string $movies = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
@@ -24,7 +24,7 @@ class Event
     private ?int $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $ReleaseDate = null;
+    private ?\DateTime $releaseDate = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
@@ -39,12 +39,12 @@ class Event
 
     public function getMovies(): ?string
     {
-        return $this->Movies;
+        return $this->movies;
     }
 
-    public function setMovies(string $Movies): static
+    public function setMovies(string $movies): static
     {
-        $this->Movies = $Movies;
+        $this->movies = $movies;
 
         return $this;
     }
@@ -74,12 +74,12 @@ class Event
 
     public function getReleaseDate(): ?\DateTime
     {
-        return $this->ReleaseDate;
+        return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTime $ReleaseDate): static
+    public function setReleaseDate(\DateTime $releaseDate): static
     {
-        $this->ReleaseDate = $ReleaseDate;
+        $this->releaseDate = $releaseDate;
 
         return $this;
     }

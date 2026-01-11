@@ -62,7 +62,8 @@ class AppFixtures extends Fixture
             $movie->setOnline($faker->boolean(70));
             
             // Associer aléatoirement 1 à 5 acteurs par film
-            $actorsToAdd = $faker->randomElements($createdActors, $faker->numberBetween(1, min(5, count($createdActors))));
+            $numActors = $faker->numberBetween(1, min(5, count($createdActors)));
+            $actorsToAdd = $faker->randomElements($createdActors, $numActors);
             foreach ($actorsToAdd as $actor) {
                 $movie->addActor($actor);
             }

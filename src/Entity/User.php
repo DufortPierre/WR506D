@@ -57,6 +57,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?string $plainPassword = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $google2faSecret = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $google2faEnabled = false;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $google2faRecoveryCodes = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -160,5 +169,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    public function getGoogle2faSecret(): ?string
+    {
+        return $this->google2faSecret;
+    }
+
+    public function setGoogle2faSecret(?string $google2faSecret): static
+    {
+        $this->google2faSecret = $google2faSecret;
+        return $this;
+    }
+
+    public function isGoogle2faEnabled(): bool
+    {
+        return $this->google2faEnabled;
+    }
+
+    public function setGoogle2faEnabled(bool $google2faEnabled): static
+    {
+        $this->google2faEnabled = $google2faEnabled;
+        return $this;
+    }
+
+    public function getGoogle2faRecoveryCodes(): ?array
+    {
+        return $this->google2faRecoveryCodes;
+    }
+
+    public function setGoogle2faRecoveryCodes(?array $google2faRecoveryCodes): static
+    {
+        $this->google2faRecoveryCodes = $google2faRecoveryCodes;
+        return $this;
     }
 }

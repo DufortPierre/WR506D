@@ -27,6 +27,8 @@ use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
@@ -69,7 +71,12 @@ class Movie
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom du film est obligatoire")]
-    #[Assert\Length(min: 1, max: 255, minMessage: "Le nom doit contenir au moins 1 caractère", maxMessage: "Le nom ne peut pas dépasser 255 caractères")]
+    #[Assert\Length(
+        min: 1,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins 1 caractère",
+        maxMessage: "Le nom ne peut pas dépasser 255 caractères"
+    )]
     #[Groups(['movie:read','movie:write','actor:read'])]
     private ?string $name = null;
 
@@ -94,8 +101,9 @@ class Movie
     #[Groups(['movie:read','movie:write'])]
     private ?MediaObject $image = null;
 
-    #[ORM\Column]
-    #[Groups(['movie:read'])]
+           #[ORM\Column]
+           #[Groups(['movie:read'])]
+           #[SerializedName('created_at')]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -122,27 +130,29 @@ class Movie
     #[Groups(['movie:read','movie:write'])]
     private ?float $budget = null;
 
-    /**
-     * @var Collection<int, Actor>
-     * Owning side (inversedBy = "movies" dans Actor)
-     */
-    #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
-    #[Groups(['movie:read','movie:write'])]
+           /**
+            * @var Collection<int, Actor>
+            * Owning side (inversedBy = "movies" dans Actor)
+            */
+           #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'movies')]
+           #[Groups(['movie:read','movie:write'])]
+           #[MaxDepth(2)]
     private Collection $actors;
 
-    /**
-     * @var Collection<int, Category>
-     * Inverse side (mappedBy = "movies" dans Category)
-     */
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'movies')]
-    #[Groups(['movie:read','movie:write'])]
+           /**
+            * @var Collection<int, Category>
+            * Inverse side (mappedBy = "movies" dans Category)
+            */
+           #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'movies')]
+           #[Groups(['movie:read','movie:write'])]
+           #[MaxDepth(2)]
     private Collection $categories;
 
     public function __construct()
     {
         $this->actors = new ArrayCollection();
         $this->categories = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]

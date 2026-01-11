@@ -32,7 +32,11 @@ class AppStatsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('type', InputArgument::REQUIRED, 'Type de données demandées (movies, actors, categories, images, all)')
+            ->addArgument(
+                'type',
+                InputArgument::REQUIRED,
+                'Type de données demandées (movies, actors, categories, images, all)'
+            )
             ->addOption('log-file', null, InputOption::VALUE_OPTIONAL, 'Chemin vers le fichier de log')
         ;
     }

@@ -21,6 +21,9 @@ use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use ApiPlatform\Metadata\GraphQl\Mutation;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
@@ -53,12 +56,22 @@ class Actor
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom de famille est obligatoire")]
-    #[Assert\Length(min: 2, max: 255, minMessage: "Le nom doit contenir au moins 2 caractères", maxMessage: "Le nom ne peut pas dépasser 255 caractères")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins 2 caractères",
+        maxMessage: "Le nom ne peut pas dépasser 255 caractères"
+    )]
     #[Groups(['actor:read','actor:write','movie:read'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Length(min: 2, max: 255, minMessage: "Le prénom doit contenir au moins 2 caractères", maxMessage: "Le prénom ne peut pas dépasser 255 caractères")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le prénom doit contenir au moins 2 caractères",
+        maxMessage: "Le prénom ne peut pas dépasser 255 caractères"
+    )]
     #[Groups(['actor:read','actor:write','movie:read'])]
     private ?string $firstname = null;
 
@@ -79,21 +92,23 @@ class Actor
     #[Groups(['actor:read','actor:write','movie:read'])]
     private ?MediaObject $photo = null;
 
-    #[ORM\Column]
-    #[Groups(['actor:read'])]
+           #[ORM\Column]
+           #[Groups(['actor:read'])]
+           #[SerializedName('created_at')]
     private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var Collection<int, Movie>
-     */
-    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
-    #[Groups(['actor:read','actor:write'])]
+           /**
+            * @var Collection<int, Movie>
+            */
+           #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
+           #[Groups(['actor:read','actor:write'])]
+           #[MaxDepth(2)]
     private Collection $movies;
 
     public function __construct()
     {
         $this->movies = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
@@ -182,7 +197,7 @@ class Actor
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
