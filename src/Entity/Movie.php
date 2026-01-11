@@ -25,6 +25,7 @@ use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -59,6 +60,8 @@ class Movie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom du film est obligatoire")]
+    #[Assert\Length(min: 1, max: 255, minMessage: "Le nom doit contenir au moins 1 caractère", maxMessage: "Le nom ne peut pas dépasser 255 caractères")]
     #[Groups(['movie:read','movie:write','actor:read'])]
     private ?string $name = null;
 
@@ -85,6 +88,30 @@ class Movie
     #[ORM\Column]
     #[Groups(['movie:read'])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\Type(type: 'integer', message: "Le nombre d'entrées doit être un entier")]
+    #[Assert\GreaterThanOrEqual(value: 0, message: "Le nombre d'entrées doit être positif ou nul")]
+    #[Groups(['movie:read','movie:write'])]
+    private ?int $nbEntries = null;
+
+    #[ORM\ManyToOne(targetEntity: Director::class, inversedBy: 'movies')]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Assert\NotNull(message: "Le réalisateur est obligatoire", groups: ['movie_creation'])]
+    #[Groups(['movie:read','movie:write'])]
+    private ?Director $director = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url(message: "L'URL doit être une URL valide")]
+    #[Assert\Length(max: 255, maxMessage: "L'URL ne peut pas dépasser 255 caractères")]
+    #[Groups(['movie:read','movie:write'])]
+    private ?string $url = null;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    #[Assert\Type(type: 'float', message: "Le budget doit être un nombre décimal")]
+    #[Assert\GreaterThanOrEqual(value: 0, message: "Le budget doit être positif ou nul")]
+    #[Groups(['movie:read','movie:write'])]
+    private ?float $budget = null;
 
     /**
      * @var Collection<int, Actor>
@@ -141,6 +168,18 @@ class Movie
 
     public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
     public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
+
+    public function getNbEntries(): ?int { return $this->nbEntries; }
+    public function setNbEntries(?int $nbEntries): static { $this->nbEntries = $nbEntries; return $this; }
+
+    public function getDirector(): ?Director { return $this->director; }
+    public function setDirector(?Director $director): static { $this->director = $director; return $this; }
+
+    public function getUrl(): ?string { return $this->url; }
+    public function setUrl(?string $url): static { $this->url = $url; return $this; }
+
+    public function getBudget(): ?float { return $this->budget; }
+    public function setBudget(?float $budget): static { $this->budget = $budget; return $this; }
 
     /** @return Collection<int, Actor> */
     public function getActors(): Collection { return $this->actors; }

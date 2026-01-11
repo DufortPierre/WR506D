@@ -2,85 +2,48 @@
 
 namespace App\Entity;
 
-use App\Repository\ActorRepository;
+use App\Repository\DirectorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
-// API Platform (REST + GraphQL)
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\GraphQl\Query;
-use ApiPlatform\Metadata\GraphQl\QueryCollection;
-use ApiPlatform\Metadata\GraphQl\Mutation;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ActorRepository::class)]
+#[ORM\Entity(repositoryClass: DirectorRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource(
-    operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()],
-    normalizationContext: ['groups' => ['actor:read']],
-    denormalizationContext: ['groups' => ['actor:write']],
-    graphQlOperations: [
-        new Query(),
-        new QueryCollection(),
-        new Mutation(name: 'create'),
-        new Mutation(name: 'update'),
-        new Mutation(name: 'delete'),
-    ]
-)]
-class Actor
+class Director
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['actor:read','movie:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom de famille est obligatoire")]
     #[Assert\Length(min: 2, max: 255, minMessage: "Le nom doit contenir au moins 2 caractères", maxMessage: "Le nom ne peut pas dépasser 255 caractères")]
-    #[Groups(['actor:read','actor:write','movie:read'])]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le prénom est obligatoire")]
     #[Assert\Length(min: 2, max: 255, minMessage: "Le prénom doit contenir au moins 2 caractères", maxMessage: "Le prénom ne peut pas dépasser 255 caractères")]
-    #[Groups(['actor:read','actor:write','movie:read'])]
     private ?string $firstname = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['actor:read','actor:write'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de naissance est obligatoire")]
+    #[Assert\Type(type: \DateTime::class, message: "La date de naissance doit être une date valide")]
     private ?\DateTime $dob = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['actor:read','actor:write'])]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Assert\Type(type: \DateTime::class, message: "La date de décès doit être une date valide")]
     private ?\DateTime $dod = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['actor:read','actor:write'])]
-    private ?string $bio = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url(message: "La photo doit être une URL valide")]
-    #[Assert\Length(max: 255, maxMessage: "L'URL de la photo ne peut pas dépasser 255 caractères")]
-    #[Groups(['actor:read','actor:write','movie:read'])]
-    private ?string $photo = null;
-
     #[ORM\Column]
-    #[Groups(['actor:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, Movie>
      */
-    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
-    #[Groups(['actor:read','actor:write'])]
+    #[ORM\OneToMany(targetEntity: Movie::class, mappedBy: 'director')]
     private Collection $movies;
 
     public function __construct()
@@ -96,8 +59,6 @@ class Actor
             $this->createdAt = new \DateTimeImmutable();
         }
     }
-
-    // -------------------- Getters / Setters --------------------
 
     public function getId(): ?int
     {
@@ -120,7 +81,7 @@ class Actor
         return $this->firstname;
     }
 
-    public function setFirstname(?string $firstname): static
+    public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
         return $this;
@@ -131,7 +92,7 @@ class Actor
         return $this->dob;
     }
 
-    public function setDob(?\DateTime $dob): static
+    public function setDob(\DateTime $dob): static
     {
         $this->dob = $dob;
         return $this;
@@ -145,28 +106,6 @@ class Actor
     public function setDod(?\DateTime $dod): static
     {
         $this->dod = $dod;
-        return $this;
-    }
-
-    public function getBio(): ?string
-    {
-        return $this->bio;
-    }
-
-    public function setBio(?string $bio): static
-    {
-        $this->bio = $bio;
-        return $this;
-    }
-
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto(?string $photo): static
-    {
-        $this->photo = $photo;
         return $this;
     }
 
@@ -193,7 +132,7 @@ class Actor
     {
         if (!$this->movies->contains($movie)) {
             $this->movies->add($movie);
-            $movie->addActor($this);
+            $movie->setDirector($this);
         }
         return $this;
     }
@@ -201,13 +140,15 @@ class Actor
     public function removeMovie(Movie $movie): static
     {
         if ($this->movies->removeElement($movie)) {
-            $movie->removeActor($this);
+            if ($movie->getDirector() === $this) {
+                $movie->setDirector(null);
+            }
         }
         return $this;
     }
 
     public function __toString(): string
     {
-        return trim(($this->firstname ?? '') . ' ' . ($this->lastname ?? '')) ?: 'Actor #'.$this->id;
+        return trim(($this->firstname ?? '') . ' ' . ($this->lastname ?? '')) ?: 'Director #'.$this->id;
     }
 }
