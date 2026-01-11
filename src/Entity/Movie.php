@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MovieRepository;
+use App\Entity\MediaObject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -87,9 +88,10 @@ class Movie
     #[Groups(['movie:read','movie:write'])]
     private ?\DateTime $releaseDate = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['movie:read','movie:write'])]
-    private ?string $image = null;
+    private ?MediaObject $image = null;
 
     #[ORM\Column]
     #[Groups(['movie:read'])]
@@ -169,8 +171,8 @@ class Movie
     public function getReleaseDate(): ?\DateTime { return $this->releaseDate; }
     public function setReleaseDate(?\DateTime $releaseDate): static { $this->releaseDate = $releaseDate; return $this; }
 
-    public function getImage(): ?string { return $this->image; }
-    public function setImage(?string $image): static { $this->image = $image; return $this; }
+    public function getImage(): ?MediaObject { return $this->image; }
+    public function setImage(?MediaObject $image): static { $this->image = $image; return $this; }
 
     public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
     public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
