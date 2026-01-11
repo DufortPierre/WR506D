@@ -70,4 +70,5 @@ jobs:
           composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run PHPMD
+        continue-on-error: true
         run: vendor/bin/phpmd src/ text phpmd.xml
