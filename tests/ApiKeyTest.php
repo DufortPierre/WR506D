@@ -42,20 +42,25 @@ class ApiKeyTest extends WebTestCase
 
     protected function tearDown(): void
     {
-        // Clean up test data
-        $apiKeys = $this->apiKeyRepository->findAll();
-        foreach ($apiKeys as $apiKey) {
-            $this->entityManager->remove($apiKey);
+        // Clean up test data - only if repositories were initialized
+        if ($this->apiKeyRepository !== null && $this->entityManager !== null) {
+            $apiKeys = $this->apiKeyRepository->findAll();
+            foreach ($apiKeys as $apiKey) {
+                $this->entityManager->remove($apiKey);
+            }
+            $this->entityManager->flush();
         }
-        $this->entityManager->flush();
     }
 
     public function testApiKeyGeneration(): void
     {
         $client = static::createClient();
+        $container = $client->getContainer();
+        $em = $container->get('doctrine')->getManager();
+        $userRepo = $em->getRepository(User::class);
 
         // Create a test user first (or use existing)
-        $user = $this->getUserRepository()->findOneBy([]) ?? $this->createTestUser();
+        $user = $userRepo->findOneBy([]) ?? $this->createTestUser($em);
 
         // Login as admin to create API key
         $client->request('POST', '/auth', [], [], [
@@ -73,8 +78,11 @@ class ApiKeyTest extends WebTestCase
     public function testApiKeyAuthenticationSuccess(): void
     {
         $client = static::createClient();
+        $container = $client->getContainer();
+        $em = $container->get('doctrine')->getManager();
+        $userRepo = $em->getRepository(User::class);
         
-        $user = $this->getUserRepository()->findOneBy([]) ?? $this->createTestUser();
+        $user = $userRepo->findOneBy([]) ?? $this->createTestUser($em);
         
         // Generate an API key
         $plainApiKey = bin2hex(random_bytes(32));
@@ -89,8 +97,8 @@ class ApiKeyTest extends WebTestCase
         $apiKey->setApiKeyHash($hash);
         $apiKey->setIsActive(true);
 
-        $this->entityManager->persist($apiKey);
-        $this->entityManager->flush();
+        $em->persist($apiKey);
+        $em->flush();
 
         // Test authentication with API key
         $client->request('GET', '/api/me', [], [], [
@@ -118,8 +126,11 @@ class ApiKeyTest extends WebTestCase
     public function testInactiveApiKey(): void
     {
         $client = static::createClient();
+        $container = $client->getContainer();
+        $em = $container->get('doctrine')->getManager();
+        $userRepo = $em->getRepository(User::class);
         
-        $user = $this->userRepository->findOneBy([]) ?? $this->createTestUser();
+        $user = $userRepo->findOneBy([]) ?? $this->createTestUser($em);
         
         // Generate an API key
         $plainApiKey = bin2hex(random_bytes(32));
@@ -134,8 +145,8 @@ class ApiKeyTest extends WebTestCase
         $apiKey->setApiKeyHash($hash);
         $apiKey->setIsActive(false); // Inactive
 
-        $this->entityManager->persist($apiKey);
-        $this->entityManager->flush();
+        $em->persist($apiKey);
+        $em->flush();
 
         // Test authentication with inactive API key
         $client->request('GET', '/api/me', [], [], [
@@ -146,15 +157,15 @@ class ApiKeyTest extends WebTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
-    private function createTestUser(): User
+    private function createTestUser(EntityManagerInterface $em): User
     {
         $user = new User();
         $user->setEmail('test@example.com');
         $user->setPassword(password_hash('password', PASSWORD_DEFAULT));
         $user->setRoles(['ROLE_ADMIN']);
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $em->persist($user);
+        $em->flush();
 
         return $user;
     }
