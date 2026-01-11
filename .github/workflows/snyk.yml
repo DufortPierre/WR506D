@@ -22,7 +22,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql
 
       - name: Setup Node.js
@@ -30,17 +30,14 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
       - name: Install Composer dependencies
         run: |
           composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/setup@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
-      - name: Run Snyk test
         run: snyk test --severity-threshold=high --file=composer.json
         continue-on-error: true
         env:

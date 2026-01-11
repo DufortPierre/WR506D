@@ -1,0 +1,11 @@
+framework:
+    rate_limiter:
+        anonymous_api:
+            policy: 'fixed_window'
+            limit: 100
+            interval: '1 hour'
+
+        authenticated_api:
+            policy: 'fixed_window'
+            limit: 1000
+            interval: '1 hour'

@@ -47,22 +47,22 @@ class AppStatsCommand extends Command
         
         switch ($type) {
             case 'movies':
-                $this->displayMoviesStats($io, $output);
+                $this->displayMoviesStats($output);
                 break;
             case 'actors':
-                $this->displayActorsStats($io, $output);
+                $this->displayActorsStats($output);
                 break;
             case 'categories':
-                $this->displayCategoriesStats($io, $output);
+                $this->displayCategoriesStats($output);
                 break;
             case 'images':
-                $this->displayImagesStats($io, $output);
+                $this->displayImagesStats($output);
                 break;
             case 'all':
-                $this->displayMoviesStats($io, $output);
-                $this->displayActorsStats($io, $output);
-                $this->displayCategoriesStats($io, $output);
-                $this->displayImagesStats($io, $output);
+                $this->displayMoviesStats($output);
+                $this->displayActorsStats($output);
+                $this->displayCategoriesStats($output);
+                $this->displayImagesStats($output);
                 break;
             default:
                 $io->error("Type invalide. Types acceptés : movies, actors, categories, images, all");
@@ -80,19 +80,19 @@ class AppStatsCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function displayMoviesStats(SymfonyStyle $io, OutputInterface $output): void
+    private function displayMoviesStats(OutputInterface $output): void
     {
         $count = $this->movieRepository->count([]);
         $output->writeln("Nombre de films : {$count}");
     }
 
-    private function displayActorsStats(SymfonyStyle $io, OutputInterface $output): void
+    private function displayActorsStats(OutputInterface $output): void
     {
         $count = $this->actorRepository->count([]);
         $output->writeln("Nombre d'acteurs : {$count}");
     }
 
-    private function displayCategoriesStats(SymfonyStyle $io, OutputInterface $output): void
+    private function displayCategoriesStats(OutputInterface $output): void
     {
         $categories = $this->categoryRepository->findAll();
         $count = count($categories);
@@ -104,7 +104,7 @@ class AppStatsCommand extends Command
         }
     }
 
-    private function displayImagesStats(SymfonyStyle $io, OutputInterface $output): void
+    private function displayImagesStats(OutputInterface $output): void
     {
         $mediaObjects = $this->mediaObjectRepository->findAll();
         $count = count($mediaObjects);

@@ -7,6 +7,8 @@ use App\Entity\Movie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Xylis\FakerCinema\Provider\Movie as MovieProvider;
+use Xylis\FakerCinema\Provider\Person as PersonProvider;
 
 class AppFixtures extends Fixture
 {
@@ -15,10 +17,10 @@ class AppFixtures extends Fixture
         $faker = Factory::create('fr_FR');
         
         // Ajout du provider Person pour générer des acteurs
-        $faker->addProvider(new \Xylis\FakerCinema\Provider\Person($faker));
+        $faker->addProvider(new PersonProvider($faker));
         
         // Génération de 190 acteurs
-        $actors = $faker->actors($gender = null, $count = 190, $duplicates = false);
+        $actors = $faker->actors(null, 190, false);
         $createdActors = [];
         
         foreach ($actors as $fullName) {
@@ -42,7 +44,7 @@ class AppFixtures extends Fixture
         $manager->flush(); // Flush pour obtenir les IDs des acteurs
         
         // Ajout du provider Movie pour générer des films
-        $faker->addProvider(new \Xylis\FakerCinema\Provider\Movie($faker));
+        $faker->addProvider(new MovieProvider($faker));
         $movies = $faker->movies(100);
         
         foreach ($movies as $movieTitle) {

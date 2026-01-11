@@ -15,7 +15,7 @@ class SlugService
 
     /**
      * Convertit une phrase en version slugifiée
-     * 
+     *
      * @param string $text Le texte à slugifier
      * @return string Le texte slugifié
      */
