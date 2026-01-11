@@ -10,15 +10,6 @@ framework:
 
     serializer:
         enabled: true
-        name_converter: null
-        circular_reference_handler: null
-        max_depth_handler: null
-        default_context:
-            circular_reference_handler: 'App\Serializer\CircularReferenceHandler'
-            max_depth: 3
-            enable_max_depth: true
-            skip_null_values: true
-            datetime_format: 'Y-m-d H:i:s'
 
 when@test:
     framework:
