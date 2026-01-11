@@ -17,6 +17,8 @@ security:
             pattern: ^/api
             stateless: true
             jwt: ~
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
         main:
             lazy: true
             provider: app_user_provider
