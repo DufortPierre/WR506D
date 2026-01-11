@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ActorRepository;
+use App\Entity\MediaObject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -72,11 +73,10 @@ class Actor
     #[Groups(['actor:read','actor:write'])]
     private ?string $bio = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url(message: "La photo doit être une URL valide")]
-    #[Assert\Length(max: 255, maxMessage: "L'URL de la photo ne peut pas dépasser 255 caractères")]
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups(['actor:read','actor:write','movie:read'])]
-    private ?string $photo = null;
+    private ?MediaObject $photo = null;
 
     #[ORM\Column]
     #[Groups(['actor:read'])]
@@ -165,12 +165,12 @@ class Actor
         return $this;
     }
 
-    public function getPhoto(): ?string
+    public function getPhoto(): ?MediaObject
     {
         return $this->photo;
     }
 
-    public function setPhoto(?string $photo): static
+    public function setPhoto(?MediaObject $photo): static
     {
         $this->photo = $photo;
         return $this;
