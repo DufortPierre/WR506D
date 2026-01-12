@@ -30,13 +30,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Patch(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            normalizationContext: ['groups' => ['actor:read']]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            normalizationContext: ['groups' => ['actor:list']]
+        ),
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            normalizationContext: ['groups' => ['actor:read']]
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            normalizationContext: ['groups' => ['actor:read']]
+        ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
-    normalizationContext: ['groups' => ['actor:read']],
     denormalizationContext: ['groups' => ['actor:write']],
     graphQlOperations: [
         new Query(),
@@ -51,7 +62,7 @@ class Actor
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['actor:read','movie:read'])]
+    #[Groups(['actor:read', 'actor:list', 'movie:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -62,7 +73,7 @@ class Actor
         minMessage: "Le nom doit contenir au moins 2 caractères",
         maxMessage: "Le nom ne peut pas dépasser 255 caractères"
     )]
-    #[Groups(['actor:read','actor:write','movie:read'])]
+    #[Groups(['actor:read', 'actor:list', 'actor:write', 'movie:read'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -72,7 +83,7 @@ class Actor
         minMessage: "Le prénom doit contenir au moins 2 caractères",
         maxMessage: "Le prénom ne peut pas dépasser 255 caractères"
     )]
-    #[Groups(['actor:read','actor:write','movie:read'])]
+    #[Groups(['actor:read', 'actor:list', 'actor:write', 'movie:read'])]
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -89,7 +100,7 @@ class Actor
 
     #[ORM\ManyToOne(targetEntity: MediaObject::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['actor:read','actor:write','movie:read'])]
+    #[Groups(['actor:read', 'actor:list', 'actor:write', 'movie:read'])]
     private ?MediaObject $photo = null;
 
            #[ORM\Column]

@@ -37,6 +37,7 @@ class Google2FAController extends AbstractController
         if (!$secret) {
             $secret = $this->google2FAService->generateSecret();
             $user->setGoogle2faSecret($secret);
+            $this->entityManager->flush();
         }
 
         // Générer l'URL du QR code
