@@ -9,6 +9,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
+use ApiPlatform\Metadata\GraphQl\Mutation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,6 +24,13 @@ use Doctrine\ORM\Mapping as ORM;
         new Post(security: "is_granted('ROLE_ADMIN')"),
         new Patch(security: "is_granted('ROLE_ADMIN')"),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
+    ],
+    graphQlOperations: [
+        new Query(),
+        new QueryCollection(),
+        new Mutation(name: 'create'),
+        new Mutation(name: 'update'),
+        new Mutation(name: 'delete'),
     ]
 )]
 class Category
