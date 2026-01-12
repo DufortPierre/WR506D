@@ -35,13 +35,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Patch(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            normalizationContext: ['groups' => ['movie:read']]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            normalizationContext: ['groups' => ['movie:list']]
+        ),
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            normalizationContext: ['groups' => ['movie:read']]
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            normalizationContext: ['groups' => ['movie:read']]
+        ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
-    normalizationContext: ['groups' => ['movie:read']],
     denormalizationContext: ['groups' => ['movie:write']],
     graphQlOperations: [
         new Query(),
@@ -66,7 +77,7 @@ class Movie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['movie:read','actor:read'])]
+    #[Groups(['movie:read', 'movie:list', 'actor:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -77,7 +88,7 @@ class Movie
         minMessage: "Le nom doit contenir au moins 1 caractère",
         maxMessage: "Le nom ne peut pas dépasser 255 caractères"
     )]
-    #[Groups(['movie:read','movie:write','actor:read'])]
+    #[Groups(['movie:read', 'movie:list', 'movie:write', 'actor:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
@@ -324,6 +335,31 @@ class Movie
             $category->removeMovie($this);
         }
         return $this;
+    }
+
+    /**
+     * Retourne la durée formatée (ex: "2h 28min")
+     */
+    #[Groups(['movie:read', 'movie:list'])]
+    public function getFormattedDuration(): ?string
+    {
+        if (null === $this->duration) {
+            return null;
+        }
+
+        $heures = intval($this->duration / 60);
+        $minutes = $this->duration % 60;
+
+        return sprintf('%dh %dmin', $heures, $minutes);
+    }
+
+    /**
+     * Retourne le nombre d'acteurs
+     */
+    #[Groups(['movie:read', 'movie:list'])]
+    public function getActorCount(): int
+    {
+        return $this->actors->count();
     }
 
     public function __toString(): string

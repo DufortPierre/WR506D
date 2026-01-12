@@ -29,9 +29,9 @@ class SerializerDemoController extends AbstractController
     {
         $movies = $this->movieRepository->findAll();
         
-        // Configuration du contexte de sérialisation
+        // Configuration du contexte de sérialisation avec movie:list pour les listes
         $context = (new ObjectNormalizerContextBuilder())
-            ->withGroups(['movie:read'])
+            ->withGroups(['movie:list'])
             ->withCircularReferenceHandler(function ($object) {
                 return $object->getId();
             })
@@ -70,8 +70,9 @@ class SerializerDemoController extends AbstractController
     {
         $actors = $this->actorRepository->findAll();
         
+        // Configuration du contexte de sérialisation avec actor:list pour les listes
         $context = (new ObjectNormalizerContextBuilder())
-            ->withGroups(['actor:read'])
+            ->withGroups(['actor:list'])
             ->withCircularReferenceHandler(function ($object) {
                 return $object->getId();
             })
@@ -140,9 +141,18 @@ class SerializerDemoController extends AbstractController
             'datetime_format' => 'Y-m-d H:i:s',
             'groups' => [
                 'movie:read',
+                'movie:list',
                 'movie:write',
                 'actor:read',
+                'actor:list',
                 'actor:write',
+            ],
+            'endpoints' => [
+                'movies_list' => '/api/serializer-demo/movies (uses movie:list)',
+                'movie_detail' => '/api/serializer-demo/movies/{id} (uses movie:read)',
+                'actors_list' => '/api/serializer-demo/actors (uses actor:list)',
+                'actor_detail' => '/api/serializer-demo/actors/{id} (uses actor:read)',
+                'deserialize' => '/api/serializer-demo/deserialize (POST)',
             ]
         ]);
     }
