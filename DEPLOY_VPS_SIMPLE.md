@@ -60,8 +60,8 @@ chmod +x deploy.sh
 docker ps
 
 # Tester l'API
-curl http://mmi23e05.mmi-troyes.fr/
-curl http://mmi23e05.mmi-troyes.fr/api/docs
+curl http://mmi23e05.mmi-troyes.fr/WR506/
+curl http://mmi23e05.mmi-troyes.fr/WR506/api/docs
 ```
 
 ## Mise à jour
@@ -74,7 +74,7 @@ git pull origin main
 
 ## URLs
 
-- **API** : http://mmi23e05.mmi-troyes.fr
-- **Documentation** : http://mmi23e05.mmi-troyes.fr/api/docs
-- **GraphQL** : http://mmi23e05.mmi-troyes.fr/api/graphql/graphiql
+- **API** : http://mmi23e05.mmi-troyes.fr/WR506
+- **Documentation** : http://mmi23e05.mmi-troyes.fr/WR506/api/docs
+- **GraphQL** : http://mmi23e05.mmi-troyes.fr/WR506/api/graphql/graphiql
 - **phpMyAdmin** : http://mmi23e05.mmi-troyes.fr:8080

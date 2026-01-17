@@ -8,3 +8,6 @@ when@prod:
     framework:
         router:
             strict_requirements: null
+            # Configuration pour servir l'application sous /WR506
+            request_context:
+                base_url: /WR506

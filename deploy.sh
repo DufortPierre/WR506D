@@ -105,9 +105,9 @@ docker-compose -f docker-compose.prod.yml ps
 
 echo ""
 echo -e "${BLUE}🌐 URLs de l'application :${NC}"
-echo -e "   - API : ${GREEN}http://mmi23e05.mmi-troyes.fr${NC}"
-echo -e "   - Documentation : ${GREEN}http://mmi23e05.mmi-troyes.fr/api/docs${NC}"
-echo -e "   - GraphQL : ${GREEN}http://mmi23e05.mmi-troyes.fr/api/graphql/graphiql${NC}"
+echo -e "   - API : ${GREEN}http://mmi23e05.mmi-troyes.fr/WR506${NC}"
+echo -e "   - Documentation : ${GREEN}http://mmi23e05.mmi-troyes.fr/WR506/api/docs${NC}"
+echo -e "   - GraphQL : ${GREEN}http://mmi23e05.mmi-troyes.fr/WR506/api/graphql/graphiql${NC}"
 echo -e "   - phpMyAdmin : ${GREEN}http://mmi23e05.mmi-troyes.fr:8080${NC}"
 
 echo ""

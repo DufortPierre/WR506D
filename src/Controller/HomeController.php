@@ -12,20 +12,24 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home', methods: ['GET'])]
     public function index(): JsonResponse
     {
+        // Les URLs seront automatiquement préfixées par /WR506 grâce à la config routing.yaml
+        $baseUrl = $this->generateUrl('app_home');
+        $apiBase = str_replace('/', '/api', $baseUrl);
+        
         return new JsonResponse([
             'message' => 'Welcome to WR506D API',
             'version' => '1.0.0',
-            'documentation' => '/api/docs',
-            'api_base' => '/api',
+            'documentation' => $apiBase . '/docs',
+            'api_base' => $apiBase,
             'endpoints' => [
-                'movies' => '/api/movies',
-                'actors' => '/api/actors',
-                'categories' => '/api/categories',
-                'directors' => '/api/directors',
-                'users' => '/api/users',
-                'api_keys' => '/api/api-keys',
-                '2fa' => '/api/2fa',
-                'serializer_demo' => '/api/serializer-demo',
+                'movies' => $apiBase . '/movies',
+                'actors' => $apiBase . '/actors',
+                'categories' => $apiBase . '/categories',
+                'directors' => $apiBase . '/directors',
+                'users' => $apiBase . '/users',
+                'api_keys' => $apiBase . '/api-keys',
+                '2fa' => $apiBase . '/2fa',
+                'serializer_demo' => $apiBase . '/serializer-demo',
             ],
         ], Response::HTTP_OK);
     }
