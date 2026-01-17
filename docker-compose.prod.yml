@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  web:
+    image: mmi3docker/symfony-2024
+    container_name: wr506d-web
+    restart: always
+    volumes:
+      - ./:/var/www/html
+      - ./apache2/sites-enabled/:/etc/apache2/sites-enabled/
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - APP_ENV=prod
+    depends_on:
+      - db
+    networks:
+      - wr506d-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: mariadb:10.5
+    container_name: wr506d-db
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-CHANGE_ME_IN_PROD}
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: ${DB_PASSWORD:-CHANGE_ME_IN_PROD}
+      MYSQL_DATABASE: symfony
+    networks:
+      - wr506d-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: wr506d-admin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-CHANGE_ME_IN_PROD}
+      UPLOAD_LIMIT: 50M
+    networks:
+      - wr506d-network
+    profiles:
+      - tools
+    depends_on:
+      - db
+
+volumes:
+  db-data:
+    driver: local
+
+networks:
+  wr506d-network:
+    driver: bridge

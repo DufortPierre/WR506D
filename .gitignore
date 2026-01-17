@@ -27,3 +27,7 @@
 /.idea/
 /.phpcs-cache
 ###< IDE & Cache ###
+
+###> Docker Production ###
+/.env.docker
+###< Docker Production ###
