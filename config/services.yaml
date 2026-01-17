@@ -35,6 +35,10 @@ services:
         bind:
             $processor: '@api_platform.doctrine.orm.state.persist_processor'
 
+    App\State\MediaObjectProcessor:
+        bind:
+            $processor: '@api_platform.doctrine.orm.state.persist_processor'
+
     App\EventSubscriber\ApiRateLimitSubscriber:
         arguments:
             $anonymousApiLimiter: '@limiter.anonymous_api'

@@ -15,16 +15,35 @@ use ApiPlatform\Metadata\GraphQl\Mutation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
-        new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Patch(security: "is_granted('ROLE_ADMIN')"),
+        new Get(
+            security: "is_granted('ROLE_USER')",
+            normalizationContext: ['groups' => ['category:read']]
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER')",
+            normalizationContext: ['groups' => ['category:list']]
+        ),
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            normalizationContext: ['groups' => ['category:read']]
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            normalizationContext: ['groups' => ['category:read']]
+        ),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
+    denormalizationContext: ['groups' => ['category:write']],
     graphQlOperations: [
         new Query(),
         new QueryCollection(),
@@ -38,29 +57,45 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['category:read', 'category:list', 'movie:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de la catégorie est obligatoire")]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins 2 caractères",
+        maxMessage: "Le nom ne peut pas dépasser 255 caractères"
+    )]
+    #[Groups(['category:read', 'category:list', 'category:write', 'movie:read'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['category:read'])]
+    #[SerializedName('created_at')]
     private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $relationMovies = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $namecategory = null;
 
     /**
      * @var Collection<int, Movie>
      */
     #[ORM\ManyToMany(targetEntity: Movie::class, inversedBy: 'categories')]
+    #[Groups(['category:read', 'category:write'])]
+    #[MaxDepth(2)]
     private Collection $movies;
 
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        if (null === $this->createdAt) {
+            $this->createdAt = new DateTimeImmutable();
+        }
     }
 
     public function getId(): ?int
@@ -68,19 +103,12 @@ class Category
         return $this->id;
     }
 
-    public function setId(string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -99,30 +127,6 @@ class Category
         return $this;
     }
 
-    public function getRelationMovies(): ?string
-    {
-        return $this->relationMovies;
-    }
-
-    public function setRelationMovies(string $relationMovies): static
-    {
-        $this->relationMovies = $relationMovies;
-
-        return $this;
-    }
-
-    public function getNamecategory(): ?string
-    {
-        return $this->namecategory;
-    }
-
-    public function setNamecategory(string $namecategory): static
-    {
-        $this->namecategory = $namecategory;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Movie>
      */
@@ -135,6 +139,7 @@ class Category
     {
         if (!$this->movies->contains($movie)) {
             $this->movies->add($movie);
+            $movie->addCategory($this);
         }
 
         return $this;
@@ -142,8 +147,15 @@ class Category
 
     public function removeMovie(Movie $movie): static
     {
-        $this->movies->removeElement($movie);
+        if ($this->movies->removeElement($movie)) {
+            $movie->removeCategory($this);
+        }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? ('Category #'.$this->id);
     }
 }

@@ -9,16 +9,22 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
+use App\State\MediaObjectProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MediaObjectRepository::class)]
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('ROLE_USER')"),
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            processor: MediaObjectProcessor::class,
+            deserialize: false
+        ),
         new Patch(security: "is_granted('ROLE_ADMIN')"),
         new Delete(security: "is_granted('ROLE_ADMIN')"),
     ],
@@ -34,6 +40,7 @@ class MediaObject
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'URL du contenu est obligatoire")]
     #[Groups(['media_object:read', 'media_object:write', 'actor:read', 'movie:read'])]
     private ?string $contentUrl = null;
 
