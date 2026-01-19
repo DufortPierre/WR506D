@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 // --- AJOUT DES IMPORTS POUR LE FILTRE ---
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -16,6 +22,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource]
+#[Get(security: "is_granted('ROLE_USER')")]
+#[GetCollection(security: "is_granted('ROLE_USER')")]
+#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Put(security: "is_granted('ROLE_ADMIN')")]
+#[Patch(security: "is_granted('ROLE_ADMIN')")]
+#[Delete(security: "is_granted('ROLE_ADMIN')")]
 // --- AJOUT DU FILTRE DE RECHERCHE ---
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial'])]
 class Movie
@@ -91,10 +103,17 @@ class Movie
     #[Assert\NotNull(message: "Le réalisateur est obligatoire")]
     private ?Director $director = null;
 
+    /**
+     * @var Collection<int, MediaObject>
+     */
+    #[ORM\OneToMany(targetEntity: MediaObject::class, mappedBy: 'movie')]
+    private Collection $mediaObjects;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->actors = new ArrayCollection();
+        $this->mediaObjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -284,6 +303,35 @@ class Movie
     public function setDirector(?Director $director): static
     {
         $this->director = $director;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MediaObject>
+     */
+    public function getMediaObjects(): Collection
+    {
+        return $this->mediaObjects;
+    }
+
+    public function addMediaObject(MediaObject $mediaObject): static
+    {
+        if (!$this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects->add($mediaObject);
+            $mediaObject->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMediaObject(MediaObject $mediaObject): static
+    {
+        if ($this->mediaObjects->removeElement($mediaObject)) {
+            if ($mediaObject->getMovie() === $this) {
+                $mediaObject->setMovie(null);
+            }
+        }
 
         return $this;
     }

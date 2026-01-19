@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\ActorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,6 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
 #[ApiResource]
+#[Get(security: "is_granted('ROLE_USER')")]
+#[GetCollection(security: "is_granted('ROLE_USER')")]
+#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Put(security: "is_granted('ROLE_ADMIN')")]
+#[Patch(security: "is_granted('ROLE_ADMIN')")]
+#[Delete(security: "is_granted('ROLE_ADMIN')")]
 class Actor
 {
     #[ORM\Id]
@@ -62,12 +74,19 @@ class Actor
     #[ORM\ManyToMany(targetEntity: Movie::class, inversedBy: 'actors')]
     private Collection $movies;
 
+    /**
+     * @var Collection<int, MediaObject>
+     */
+    #[ORM\OneToMany(targetEntity: MediaObject::class, mappedBy: 'actor')]
+    private Collection $mediaObjects;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function __construct()
     {
         $this->movies = new ArrayCollection();
+        $this->mediaObjects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,6 +198,35 @@ class Actor
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MediaObject>
+     */
+    public function getMediaObjects(): Collection
+    {
+        return $this->mediaObjects;
+    }
+
+    public function addMediaObject(MediaObject $mediaObject): static
+    {
+        if (!$this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects->add($mediaObject);
+            $mediaObject->setActor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMediaObject(MediaObject $mediaObject): static
+    {
+        if ($this->mediaObjects->removeElement($mediaObject)) {
+            if ($mediaObject->getActor() === $this) {
+                $mediaObject->setActor(null);
+            }
+        }
 
         return $this;
     }

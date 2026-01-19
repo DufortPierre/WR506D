@@ -33,3 +33,8 @@ services:
     App\State\UserPasswordHasher:
         bind:
             $processor: '@api_platform.doctrine.orm.state.persist_processor'
+
+    # Commande de statistiques
+    App\Command\StatsCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
