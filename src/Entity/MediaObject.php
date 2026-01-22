@@ -23,24 +23,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         new Post(
             controller: \App\Controller\MediaObjectController::class,
             deserialize: false,
-            validationContext: ['groups' => ['Default', 'media_object_create']],
-            openapiContext: [
-                'requestBody' => [
-                    'content' => [
-                        'multipart/form-data' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'file' => [
-                                        'type' => 'string',
-                                        'format' => 'binary'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+            validationContext: ['groups' => ['Default', 'media_object_create']]
         ),
         new Delete()
     ]

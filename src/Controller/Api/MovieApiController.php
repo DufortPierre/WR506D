@@ -43,7 +43,10 @@ class MovieApiController extends AbstractController
                 'releaseDate' => $movie->getReleaseDate()?->format('Y-m-d'),
                 'online' => $movie->isOnline(),
                 'categories' => array_map(fn($c) => $c->getName(), $movie->getCategories()->toArray()),
-                'actors' => array_map(fn($a) => $a->getFirstname() . ' ' . $a->getLastname(), $movie->getActors()->toArray()),
+                'actors' => array_map(
+                    fn($a) => $a->getFirstname() . ' ' . $a->getLastname(),
+                    $movie->getActors()->toArray()
+                ),
             ];
         }
 

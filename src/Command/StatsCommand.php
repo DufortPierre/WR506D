@@ -33,7 +33,11 @@ class StatsCommand extends Command
     {
         $this
             ->setDescription('Affiche les statistiques de l\'application')
-            ->addArgument('type', InputArgument::REQUIRED, 'Type de données demandées (all, movies, actors, categories, images)')
+            ->addArgument(
+                'type',
+                InputArgument::REQUIRED,
+                'Type de données demandées (all, movies, actors, categories, images)'
+            )
             ->addOption('details', null, InputOption::VALUE_NONE, 'Affiche des détails supplémentaires')
             ->addOption('log-file', null, InputOption::VALUE_OPTIONAL, 'Chemin vers le fichier de log');
     }

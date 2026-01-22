@@ -38,15 +38,16 @@ class MovieFixtures extends Fixture
             $actors[] = $actor;
         }
         
-for ($i = 0; $i < 50; $i++) {
-    $movie = new Movie();
-    $movie->setName($faker->movie());
-    $movie->setOnline($faker->boolean(70)); // 70% de chance d'être online
-    $movie->setCreatedAt(new \DateTimeImmutable());
-    $movie->addCategory($faker->randomElement($categories));
-    $movie->addActor($faker->randomElement($actors));
-    $manager->persist($movie);
-}
+        for ($i = 0; $i < 50; $i++) {
+            $movie = new Movie();
+            /** @phpstan-ignore-next-line */
+            $movie->setName($faker->movie());
+            $movie->setOnline($faker->boolean(70)); // 70% de chance d'être online
+            $movie->setCreatedAt(new \DateTimeImmutable());
+            $movie->addCategory($faker->randomElement($categories));
+            $movie->addActor($faker->randomElement($actors));
+            $manager->persist($movie);
+        }
         
         $manager->flush();
     }

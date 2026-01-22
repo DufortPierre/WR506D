@@ -19,7 +19,7 @@ class MediaObjectController extends AbstractController
         }
 
         $mediaObject = new MediaObject();
-        $mediaObject->file = $uploadedFile;
+        $mediaObject->setFile($uploadedFile);
 
         return $mediaObject;
     }
