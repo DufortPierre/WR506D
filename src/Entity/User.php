@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -67,9 +68,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['user:read', 'user:write'])]
+    private ?int $rateLimit = null;
+
+    #[ORM\Column(length: 64, unique: true, nullable: true)]
+    #[Assert\Length(
+        exactly: 64,
+        exactMessage: "Le hash de la clé API doit contenir exactement {{ limit }} caractères"
+    )]
+    private ?string $apiKeyHash = null;
+
+    #[ORM\Column(length: 16, nullable: true)]
+    #[Assert\Length(
+        exactly: 16,
+        exactMessage: "Le préfixe de la clé API doit contenir exactement {{ limit }} caractères"
+    )]
+    #[Groups(['user:read'])]
+    private ?string $apiKeyPrefix = null;
+
+    #[ORM\Column]
+    #[Groups(['user:read', 'user:write'])]
+    private ?bool $apiKeyEnabled = false;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['user:read'])]
+    private ?\DateTimeImmutable $apiKeyCreatedAt = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['user:read'])]
+    private ?\DateTimeImmutable $apiKeyLastUsedAt = null;
+
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->apiKeyEnabled = false;
     }
 
     public function getId(): ?int
@@ -167,6 +200,85 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getRateLimit(): ?int
+    {
+        return $this->rateLimit;
+    }
+
+    public function setRateLimit(?int $rateLimit): static
+    {
+        $this->rateLimit = $rateLimit;
+
+        return $this;
+    }
+
+    public function getApiKeyHash(): ?string
+    {
+        return $this->apiKeyHash;
+    }
+
+    public function setApiKeyHash(?string $apiKeyHash): static
+    {
+        $this->apiKeyHash = $apiKeyHash;
+
+        return $this;
+    }
+
+    public function getApiKeyPrefix(): ?string
+    {
+        return $this->apiKeyPrefix;
+    }
+
+    public function setApiKeyPrefix(?string $apiKeyPrefix): static
+    {
+        $this->apiKeyPrefix = $apiKeyPrefix;
+
+        return $this;
+    }
+
+    public function isApiKeyEnabled(): ?bool
+    {
+        return $this->apiKeyEnabled;
+    }
+
+    public function setApiKeyEnabled(bool $apiKeyEnabled): static
+    {
+        $this->apiKeyEnabled = $apiKeyEnabled;
+
+        return $this;
+    }
+
+    public function getApiKeyCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->apiKeyCreatedAt;
+    }
+
+    public function setApiKeyCreatedAt(?\DateTimeImmutable $apiKeyCreatedAt): static
+    {
+        $this->apiKeyCreatedAt = $apiKeyCreatedAt;
+
+        return $this;
+    }
+
+    public function getApiKeyLastUsedAt(): ?\DateTimeImmutable
+    {
+        return $this->apiKeyLastUsedAt;
+    }
+
+    public function setApiKeyLastUsedAt(?\DateTimeImmutable $apiKeyLastUsedAt): static
+    {
+        $this->apiKeyLastUsedAt = $apiKeyLastUsedAt;
+
+        return $this;
+    }
+
+    public function updateApiKeyLastUsedAt(): static
+    {
+        $this->apiKeyLastUsedAt = new DateTimeImmutable();
 
         return $this;
     }

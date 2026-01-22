@@ -38,3 +38,9 @@ services:
     App\Command\StatsCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    # EventSubscriber pour le rate limiting API
+    App\EventSubscriber\ApiRateLimitSubscriber:
+        arguments:
+            $anonymousApiLimiter: '@limiter.anonymous_api'
+            $authenticatedApiLimiter: '@limiter.authenticated_api'
