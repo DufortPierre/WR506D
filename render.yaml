@@ -35,3 +35,33 @@ services:
     plan: starter
     databaseName: symfony
     databaseUser: symfony
+
+  # phpMyAdmin
+  - type: web
+    name: wr506d-phpmyadmin
+    runtime: docker
+    dockerfilePath: ./Dockerfile.phpmyadmin
+    envVars:
+      - key: PMA_HOST
+        fromService:
+          name: wr506d-db
+          type: mysql
+          property: host
+      - key: PMA_PORT
+        fromService:
+          name: wr506d-db
+          type: mysql
+          property: port
+      - key: PMA_USER
+        fromService:
+          name: wr506d-db
+          type: mysql
+          property: user
+      - key: PMA_PASSWORD
+        fromService:
+          name: wr506d-db
+          type: mysql
+          property: password
+      - key: UPLOAD_LIMIT
+        value: '50M'
+    plan: starter

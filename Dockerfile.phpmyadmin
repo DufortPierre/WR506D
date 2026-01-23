@@ -1,0 +1,7 @@
+FROM phpmyadmin/phpmyadmin:latest
+
+# Configuration phpMyAdmin
+ENV PMA_ARBITRARY=1
+ENV UPLOAD_LIMIT=50M
+
+EXPOSE 80
