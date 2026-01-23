@@ -33,13 +33,30 @@ php bin/console cache:clear --env=prod --no-debug || true
 php bin/console cache:warmup --env=prod || true
 
 echo "🗄️  Exécution des migrations..."
-php bin/console doctrine:database:create --if-not-exists || true
-php bin/console doctrine:migrations:migrate --no-interaction || echo "⚠️  Migrations non exécutées"
+# Attendre que la base de données soit disponible
+echo "⏳ Attente de la base de données..."
+for i in {1..30}; do
+    if php bin/console doctrine:database:create --if-not-exists 2>/dev/null; then
+        echo "✅ Base de données accessible"
+        php bin/console doctrine:migrations:migrate --no-interaction && break || echo "⚠️  Migrations non exécutées"
+        break
+    else
+        echo "⏳ Tentative $i/30..."
+        sleep 2
+    fi
+done
 
 # Permissions
 chmod -R 775 var/cache var/log || true
 
 echo "✅ Application prête !"
 
-# Exécuter la commande passée en paramètre
+# Si la commande est "start-server", démarrer le serveur PHP
+if [ "$1" = "start-server" ]; then
+    PORT=${PORT:-10000}
+    echo "🌐 Démarrage du serveur PHP sur le port $PORT..."
+    exec php -S 0.0.0.0:$PORT -t public public/index.php
+fi
+
+# Sinon, exécuter la commande passée en paramètre
 exec "$@"
