@@ -20,10 +20,8 @@ services:
       - key: MYSQL_USER
         value: symfony
       - key: MYSQL_PASSWORD
-        fromService:
-          type: env
-          name: wr506d-db
-          property: MYSQL_PASSWORD
+        # À définir manuellement dans Render avec la même valeur que dans wr506d-db
+        generateValue: true
       - key: DATABASE_URL
         # Construit dans .render-build.sh à partir des variables ci-dessus
         value: 'mysql://symfony:${MYSQL_PASSWORD}@wr506d-db:3306/symfony?serverVersion=8.0&charset=utf8mb4'
@@ -74,8 +72,8 @@ services:
       - key: PMA_USER
         value: symfony
       - key: PMA_PASSWORD
-        # Utilise le même mot de passe que MYSQL_PASSWORD (à définir manuellement dans Render)
-        value: '${MYSQL_PASSWORD}'
+        # À définir manuellement dans Render avec la même valeur que MYSQL_PASSWORD
+        generateValue: true
       - key: UPLOAD_LIMIT
         value: '50M'
     plan: starter
