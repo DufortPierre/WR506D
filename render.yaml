@@ -29,8 +29,8 @@ services:
         generateValue: true
     healthCheckPath: /api/docs
 
-  # Base de données PostgreSQL
-  - type: postgres
+  # Base de données MySQL
+  - type: mysql
     name: wr506d-db
     plan: starter
     databaseName: symfony
