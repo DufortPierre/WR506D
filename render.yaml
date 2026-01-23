@@ -22,15 +22,15 @@ services:
       - key: CORS_ALLOW_ORIGIN
         value: '^https?://(.*\.render\.com|localhost|127\.0\.0\.1)(:[0-9]+)?$'
       - key: JWT_SECRET_KEY
-        value: %kernel.project_dir%/config/jwt/private.pem
+        value: '%kernel.project_dir%/config/jwt/private.pem'
       - key: JWT_PUBLIC_KEY
-        value: %kernel.project_dir%/config/jwt/public.pem
+        value: '%kernel.project_dir%/config/jwt/public.pem'
       - key: JWT_PASSPHRASE
         generateValue: true
     healthCheckPath: /api/docs
 
   # Base de données PostgreSQL
-  - type: pspg
+  - type: postgres
     name: wr506d-db
     plan: starter
     databaseName: symfony
