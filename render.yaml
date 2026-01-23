@@ -2,10 +2,8 @@ services:
   # Service Web Symfony
   - type: web
     name: wr506d-api
-    runtime: php
-    plan: starter
-    buildCommand: chmod +x .render-build.sh && ./.render-build.sh
-    startCommand: php -S 0.0.0.0:$PORT -t public public/index.php
+    runtime: docker
+    dockerfilePath: ./Dockerfile.symfony
     envVars:
       - key: APP_ENV
         value: prod
