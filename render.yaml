@@ -11,10 +11,22 @@ services:
         value: prod
       - key: APP_SECRET
         generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
+      - key: MYSQL_HOST
+        value: wr506d-db
+      - key: MYSQL_PORT
+        value: '3306'
+      - key: MYSQL_DATABASE
+        value: symfony
+      - key: MYSQL_USER
+        value: symfony
+      - key: MYSQL_PASSWORD
+        fromService:
+          type: env
           name: wr506d-db
-          property: connectionString
+          property: MYSQL_PASSWORD
+      - key: DATABASE_URL
+        # Construit dans .render-build.sh à partir des variables ci-dessus
+        value: 'mysql://symfony:${MYSQL_PASSWORD}@wr506d-db:3306/symfony?serverVersion=8.0&charset=utf8mb4'
       - key: MESSENGER_TRANSPORT_DSN
         value: doctrine://default?auto_setup=0
       - key: MAILER_DSN
@@ -29,12 +41,25 @@ services:
         generateValue: true
     healthCheckPath: /api/docs
 
-  # Base de données MySQL
-  - type: mysql
+  # Base de données MySQL (service Docker privé)
+  - type: pserv
     name: wr506d-db
+    runtime: docker
+    dockerfilePath: ./Dockerfile.mysql
+    envVars:
+      - key: MYSQL_DATABASE
+        value: symfony
+      - key: MYSQL_USER
+        value: symfony
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
     plan: starter
-    databaseName: symfony
-    databaseUser: symfony
 
   # phpMyAdmin
   - type: web
@@ -43,25 +68,14 @@ services:
     dockerfilePath: ./Dockerfile.phpmyadmin
     envVars:
       - key: PMA_HOST
-        fromService:
-          name: wr506d-db
-          type: mysql
-          property: host
+        value: wr506d-db
       - key: PMA_PORT
-        fromService:
-          name: wr506d-db
-          type: mysql
-          property: port
+        value: '3306'
       - key: PMA_USER
-        fromService:
-          name: wr506d-db
-          type: mysql
-          property: user
+        value: symfony
       - key: PMA_PASSWORD
-        fromService:
-          name: wr506d-db
-          type: mysql
-          property: password
+        # Utilise le même mot de passe que MYSQL_PASSWORD (à définir manuellement dans Render)
+        value: '${MYSQL_PASSWORD}'
       - key: UPLOAD_LIMIT
         value: '50M'
     plan: starter

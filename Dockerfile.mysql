@@ -1,0 +1,8 @@
+FROM mysql:8.0
+
+# Configuration MySQL
+ENV MYSQL_DATABASE=symfony
+ENV MYSQL_USER=symfony
+
+# Le mot de passe sera fourni via les variables d'environnement
+EXPOSE 3306

@@ -46,6 +46,13 @@ php bin/console cache:clear --env=prod --no-debug || true
 echo "🔥 Réchauffage du cache..."
 php bin/console cache:warmup --env=prod || true
 
+# Construction de DATABASE_URL si nécessaire
+if [ -z "$DATABASE_URL" ] && [ -n "$MYSQL_PASSWORD" ]; then
+    echo "🔧 Construction de DATABASE_URL..."
+    export DATABASE_URL="mysql://${MYSQL_USER:-symfony}:${MYSQL_PASSWORD}@${MYSQL_HOST:-wr506d-db}:3306/${MYSQL_DATABASE:-symfony}?serverVersion=8.0&charset=utf8mb4"
+    echo "DATABASE_URL construit"
+fi
+
 # Migrations (si DB disponible)
 echo "🗄️  Exécution des migrations..."
 php bin/console doctrine:database:create --if-not-exists || true
