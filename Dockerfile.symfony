@@ -24,8 +24,8 @@ WORKDIR /var/www/html
 # Copier les fichiers du projet
 COPY . .
 
-# Installation des dépendances Composer (sans les clés JWT qui nécessitent les variables d'env)
-RUN composer install --no-dev --optimize-autoloader --no-interaction || true
+# Installation des dépendances Composer (désactiver les scripts auto pour éviter cache:clear)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts || true
 
 # Créer les répertoires nécessaires
 RUN mkdir -p var/cache var/log config/jwt public/uploads
